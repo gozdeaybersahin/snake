@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Gözde - Snake</title>
     <style>
-        /* --- YENİLENMİŞ CYBERPUNK CSS TASARIMI --- */
         body {
             display: flex;
             flex-direction: column;
@@ -18,15 +17,12 @@
             margin: 0;
             padding-top: 20px;
             min-height: 100vh;
-            
-            /* Mobilde kaydırma yaparken ekranın esnemesini engeller! */
             touch-action: none; 
             overflow: hidden; 
             -webkit-user-select: none;
             user-select: none;
         }
 
-        /* Üst Bilgi Kartları (Skor ve Rekor) */
         .header-panel {
             display: flex;
             gap: 20px;
@@ -60,7 +56,6 @@
             text-shadow: 0 0 10px #ff007f;
         }
 
-        /* Sıradaki Yem Puanı */
         .stats-card {
             background: rgba(0, 0, 0, 0.5);
             padding: 6px 18px;
@@ -72,7 +67,6 @@
             text-shadow: 0 0 5px #ffd700;
         }
 
-        /* Oyun Alanı */
         #gameBoard {
             background-color: #010103;
             border: 2px solid #00ffcc;
@@ -82,11 +76,9 @@
                         inset 0 0 20px rgba(0,0,0,0.9);
             max-width: 90vw;
             max-height: 90vw;
-            /* Dokunma olaylarının oyuna öncelikli iletilmesi için */
             z-index: 10;
         }
 
-        /* Kontrol Butonları */
         .controls {
             display: flex;
             gap: 15px;
@@ -117,7 +109,6 @@
             display: none;
         }
 
-        /* Mobilde ekrana bilgi notu */
         .mobile-hint {
             margin-top: 20px;
             color: #66e6e6;
@@ -250,44 +241,54 @@
             // Klavye Yön Tuşları (PC için)
             window.addEventListener("keydown", (e) => { initAudio(); changeDirection(e); });
             
-            // --- TÜM EKRAN KAYDIRMA (SWIPE) KONTROLLERİ ---
-            let touchStartX = 0;
-            let touchStartY = 0;
+            // --- DAHA HASSAS VE KESİNTİSİZ KAYDIRMA (SWIPE) KONTROLLERİ ---
+            let touchStartX = null;
+            let touchStartY = null;
+            const swipeThreshold = 10; // 20'den 10'a düşürdük, en ufak hareketi algılar
 
-            // Dokunmayı sadece canvas'ta değil, tüm belgede algıla
+            // Parmağı ekrana dokundurduğunda başlangıç noktasını al
             document.addEventListener('touchstart', function(e) {
-                // Tıklanan şey bir buton değilse kaydırma işlemi başlat
                 if(e.target.tagName !== 'BUTTON') {
-                    touchStartX = e.changedTouches[0].screenX;
-                    touchStartY = e.changedTouches[0].screenY;
+                    touchStartX = e.touches[0].screenX;
+                    touchStartY = e.touches[0].screenY;
                     initAudio(); 
                 }
             }, { passive: true });
 
-            document.addEventListener('touchend', function(e) {
-                if(e.target.tagName !== 'BUTTON') {
-                    let touchEndX = e.changedTouches[0].screenX;
-                    let touchEndY = e.changedTouches[0].screenY;
-                    handleSwipe(touchStartX, touchStartY, touchEndX, touchEndY);
+            // Parmağı ekranda sürüklerken anlık olarak algıla (kaldırmayı beklemez)
+            document.addEventListener('touchmove', function(e) {
+                if(e.target.tagName !== 'BUTTON' && touchStartX !== null && touchStartY !== null) {
+                    let touchCurrentX = e.touches[0].screenX;
+                    let touchCurrentY = e.touches[0].screenY;
+                    
+                    let deltaX = touchCurrentX - touchStartX;
+                    let deltaY = touchCurrentY - touchStartY;
+                    
+                    // Mesafe belirlediğimiz hassasiyeti geçti mi?
+                    if (Math.abs(deltaX) > swipeThreshold || Math.abs(deltaY) > swipeThreshold) {
+                        if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                            if (deltaX > 0) setDirection('RIGHT');
+                            else setDirection('LEFT');
+                        } else {
+                            if (deltaY > 0) setDirection('DOWN');
+                            else setDirection('UP');
+                        }
+                        
+                        // Hareketi algılayınca çok hafif titreşim
+                        if (navigator.vibrate) navigator.vibrate(10); 
+                        
+                        // ZİG-ZAG YAPABİLMEK İÇİN: Başlangıç noktasını sıfırla ki parmak kalkmadan yeni yönü algılasın
+                        touchStartX = touchCurrentX;
+                        touchStartY = touchCurrentY;
+                    }
                 }
             }, { passive: true });
 
-            function handleSwipe(startX, startY, endX, endY) {
-                let deltaX = endX - startX;
-                let deltaY = endY - startY;
-                
-                // Hassasiyeti 30'dan 20'ye düşürdük, en ufak hareketi anında yakalayacak
-                if (Math.abs(deltaX) > 20 || Math.abs(deltaY) > 20) {
-                    if (Math.abs(deltaX) > Math.abs(deltaY)) {
-                        if (deltaX > 0) setDirection('RIGHT');
-                        else setDirection('LEFT');
-                    } else {
-                        if (deltaY > 0) setDirection('DOWN');
-                        else setDirection('UP');
-                    }
-                    if (navigator.vibrate) navigator.vibrate(20); // Ufak bir titreşim
-                }
-            }
+            // Parmağı ekrandan çekince değişkenleri sıfırla
+            document.addEventListener('touchend', function(e) {
+                touchStartX = null;
+                touchStartY = null;
+            }, { passive: true });
             
             initGame();
 
@@ -311,7 +312,7 @@
                 if(running) return;
                 startBtn.style.display = "none";
                 restartBtn.style.display = "none";
-                document.querySelector('.mobile-hint').style.display = "none"; // İpucunu gizle
+                document.querySelector('.mobile-hint').style.display = "none";
                 running = true;
                 scoreText.textContent = score;
                 updatePointsUI();
