@@ -241,12 +241,13 @@
             // Klavye Yön Tuşları (PC için)
             window.addEventListener("keydown", (e) => { initAudio(); changeDirection(e); });
             
-            // --- DAHA HASSAS VE KESİNTİSİZ KAYDIRMA (SWIPE) KONTROLLERİ ---
+            // --- EKSTRA HASSAS KAYDIRMA (SWIPE) KONTROLLERİ ---
             let touchStartX = null;
             let touchStartY = null;
-            const swipeThreshold = 10; // 20'den 10'a düşürdük, en ufak hareketi algılar
+            
+            // Eşik değeri 10'dan 5'e düşürüldü. Çok küçük bir dokunuş bile hareketi tetikleyecek.
+            const swipeThreshold = 5; 
 
-            // Parmağı ekrana dokundurduğunda başlangıç noktasını al
             document.addEventListener('touchstart', function(e) {
                 if(e.target.tagName !== 'BUTTON') {
                     touchStartX = e.touches[0].screenX;
@@ -255,7 +256,6 @@
                 }
             }, { passive: true });
 
-            // Parmağı ekranda sürüklerken anlık olarak algıla (kaldırmayı beklemez)
             document.addEventListener('touchmove', function(e) {
                 if(e.target.tagName !== 'BUTTON' && touchStartX !== null && touchStartY !== null) {
                     let touchCurrentX = e.touches[0].screenX;
@@ -264,7 +264,6 @@
                     let deltaX = touchCurrentX - touchStartX;
                     let deltaY = touchCurrentY - touchStartY;
                     
-                    // Mesafe belirlediğimiz hassasiyeti geçti mi?
                     if (Math.abs(deltaX) > swipeThreshold || Math.abs(deltaY) > swipeThreshold) {
                         if (Math.abs(deltaX) > Math.abs(deltaY)) {
                             if (deltaX > 0) setDirection('RIGHT');
@@ -274,17 +273,14 @@
                             else setDirection('UP');
                         }
                         
-                        // Hareketi algılayınca çok hafif titreşim
                         if (navigator.vibrate) navigator.vibrate(10); 
                         
-                        // ZİG-ZAG YAPABİLMEK İÇİN: Başlangıç noktasını sıfırla ki parmak kalkmadan yeni yönü algılasın
                         touchStartX = touchCurrentX;
                         touchStartY = touchCurrentY;
                     }
                 }
             }, { passive: true });
 
-            // Parmağı ekrandan çekince değişkenleri sıfırla
             document.addEventListener('touchend', function(e) {
                 touchStartX = null;
                 touchStartY = null;
