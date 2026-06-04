@@ -23,6 +23,15 @@
             user-select: none;
         }
 
+        /* Bilgi paneli üst grubu */
+        .top-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            z-index: 20;
+        }
+
         .header-panel {
             display: flex;
             gap: 20px;
@@ -67,6 +76,16 @@
             text-shadow: 0 0 5px #ffd700;
         }
 
+        /* Ana İçerik Alanı */
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            width: 100%;
+            justify-content: center;
+        }
+
         #gameBoard {
             background-color: #010103;
             border: 2px solid #00ffcc;
@@ -82,7 +101,8 @@
         .controls {
             display: flex;
             gap: 15px;
-            margin-top: 30px;
+            margin-top: 20px;
+            z-index: 20;
         }
         .btn-primary {
             padding: 12px 28px;
@@ -109,40 +129,113 @@
             display: none;
         }
 
-        .mobile-hint {
-            margin-top: 20px;
-            color: #66e6e6;
-            font-size: 14px;
-            text-align: center;
-            opacity: 0.7;
+        /* Talimatlar Paneli */
+        .instructions-panel {
+            background: rgba(10, 15, 30, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 255, 255, 0.15);
+            border-radius: 8px;
+            padding: 20px;
+            max-width: 85vw;
+            width: 300px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+        
+        /* Webde sol tarafa konulan görünmez dengeleyici blok (Oyunun tam ortada kalmasını sağlar) */
+        .spacer-block {
+            display: none;
+            width: 300px;
         }
 
-        @media (min-width: 768px) {
+        .ins-title {
+            font-size: 15px;
+            font-weight: bold;
+            color: #00ffcc;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            text-align: center;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+            padding-bottom: 6px;
+        }
+        .ins-section {
+            font-size: 13px;
+            line-height: 1.6;
+            color: #a8b8d0;
+            margin-bottom: 10px;
+        }
+        .ins-section strong {
+            color: #ffffff;
+        }
+        .ins-highlight {
+            color: #ffd700;
+            text-shadow: 0 0 3px rgba(255, 215, 0, 0.4);
+        }
+
+        /* --- GENİŞ EKRANLARDA (PC/WEB) TAM ORTALAMA VE SAĞA ALMA AYARLARI --- */
+        @media (min-width: 850px) {
             body { padding-top: 40px; }
-            .mobile-hint { display: none; }
+            
+            .main-container {
+                flex-direction: row; 
+                align-items: center;
+                justify-content: center; /* Elemanları merkeze toplar */
+                gap: 40px; /* Oyun alanı ile bilgi paneli arasındaki boşluk */
+            }
+            
+            .spacer-block {
+                display: block; /* Sol tarafa hayali bir yük koyarak canvas'ı merkeze iter */
+            }
+
+            .instructions-panel {
+                margin-top: 0; 
+                height: 400px; /* Canvas yüksekliğiyle tam eşit durması için */
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
         }
     </style>
 </head>
 <body>
 
-    <div class="header-panel">
-        <div class="score-card">
-            <div class="score-label">Skor</div>
-            <div class="score-value" id="scoreText">0</div>
+    <div class="top-container">
+        <div class="header-panel">
+            <div class="score-card">
+                <div class="score-label">Skor</div>
+                <div class="score-value" id="scoreText">0</div>
+            </div>
+            <div class="score-card">
+                <div class="score-label">Rekor</div>
+                <div class="score-value record-value" id="highScoreText">0</div>
+            </div>
         </div>
-        <div class="score-card">
-            <div class="score-label">Rekor</div>
-            <div class="score-value record-value" id="highScoreText">0</div>
+        
+        <div class="stats-card">
+            Sıradaki Yem: <span id="pointsText">1</span> Puan
         </div>
     </div>
     
-    <div class="stats-card">
-        Sıradaki Yem: <span id="pointsText">1</span> Puan
+    <div class="main-container">
+        <div class="spacer-block"></div>
+
+        <canvas id="gameBoard" width="400" height="400"></canvas>
+
+        <div class="instructions-panel" id="instructionsPanel">
+            <div class="ins-title">🎮 Nasıl Oynanır?</div>
+            <div class="ins-section">
+                📱 <strong>Mobil:</strong> Yön vermek için ekranda parmağını kaydır. Parmağını <strong>hiç kaldırmadan</strong> sürükleyerek de kesintisiz yön verebilirsin.
+            </div>
+            <div class="ins-section">
+                💻 <strong>PC:</strong> Klavyedeki <strong>Yön (Ok) Tuşlarını</strong> veya <strong>W, A, S, D</strong> tuşlarını kullanabilirsin.
+            </div>
+            <div class="ins-section">
+                🌟 <strong class="ins-highlight">Sarı (Altın) Yem:</strong> Nadiren belirir ve 7 saniye kalır. Yakalarsan <span class="ins-highlight">5 kat puan</span> verir ve yılanı <span class="ins-highlight">yavaşlatarak</span> rahatlatır!
+            </div>
+        </div>
     </div>
-    
-    <canvas id="gameBoard" width="400" height="400"></canvas>
-    
-    <div class="mobile-hint">Yönlendirmek için ekranda parmağınızı kaydırın 👆</div>
 
     <div class="controls">
         <button id="startBtn" class="btn-primary">Oyuna Başla</button>
@@ -158,6 +251,7 @@
             const pointsText = document.getElementById("pointsText");
             const startBtn = document.getElementById("startBtn");
             const restartBtn = document.getElementById("restartBtn");
+            const instructionsPanel = document.getElementById("instructionsPanel");
 
             const boardBackground = "#010103";
             const gridColor = "rgba(0, 255, 255, 0.02)";
@@ -180,7 +274,6 @@
             let highScore = 0;
             let goldenFood = null; 
 
-            // Ses Motoru
             let audioCtx;
             function initAudio() {
                 if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -238,14 +331,11 @@
             startBtn.addEventListener("click", startGame);
             restartBtn.addEventListener("click", resetGame);
             
-            // Klavye Yön Tuşları (PC için)
             window.addEventListener("keydown", (e) => { initAudio(); changeDirection(e); });
             
-            // --- EKSTRA HASSAS KAYDIRMA (SWIPE) KONTROLLERİ ---
+            // --- HASSAS KAYDIRMA (SWIPE) KONTROLLERİ ---
             let touchStartX = null;
             let touchStartY = null;
-            
-            // Eşik değeri 10'dan 5'e düşürüldü. Çok küçük bir dokunuş bile hareketi tetikleyecek.
             const swipeThreshold = 5; 
 
             document.addEventListener('touchstart', function(e) {
@@ -301,6 +391,8 @@
                 ctx.fillStyle = "#66e6e6";
                 ctx.shadowBlur = 0;
                 ctx.fillText("Başlamak için butona bas", canvas.width / 2, canvas.height / 2 + 20);
+                instructionsPanel.style.visibility = "visible";
+                instructionsPanel.style.opacity = "1";
             }
 
             function startGame() {
@@ -308,7 +400,10 @@
                 if(running) return;
                 startBtn.style.display = "none";
                 restartBtn.style.display = "none";
-                document.querySelector('.mobile-hint').style.display = "none";
+                
+                instructionsPanel.style.visibility = "hidden";
+                instructionsPanel.style.opacity = "0";
+                
                 running = true;
                 scoreText.textContent = score;
                 updatePointsUI();
@@ -487,6 +582,10 @@
                 ctx.fillText("OYUN BİTTİ!", canvas.width / 2, canvas.height / 2);
                 ctx.shadowBlur = 0;
                 restartBtn.style.display = "block"; 
+                
+                instructionsPanel.style.visibility = "visible";
+                instructionsPanel.style.opacity = "1";
+                
                 running = false;
             };
 
