@@ -10,16 +10,20 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            /* Gelişmiş Degradeli Arka Plan */
             background: radial-gradient(circle at center, #0a1122 0%, #000205 100%), 
                         linear-gradient(180deg, rgba(255,255,255,0.02) 1px, transparent 1px);
-            background-size: cover, 100% 3px; /* Hafif yatay tarama çizgileri */
-            color: #00ffff; /* Ana renk: Turkuaz */
+            background-size: cover, 100% 3px; 
+            color: #00ffff; 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding-top: 20px;
             min-height: 100vh;
-            touch-action: manipulation; 
+            
+            /* Mobilde kaydırma yaparken ekranın esnemesini engeller! */
+            touch-action: none; 
+            overflow: hidden; 
+            -webkit-user-select: none;
+            user-select: none;
         }
 
         /* Üst Bilgi Kartları (Skor ve Rekor) */
@@ -32,14 +36,11 @@
             background: rgba(10, 10, 20, 0.6);
             backdrop-filter: blur(15px);
             padding: 10px 20px;
-            border-radius: 8px; /* Daha keskin köşeler */
-            border: 1px solid rgba(0, 255, 255, 0.3); /* Turkuaz parıltılı sınır */
+            border-radius: 8px; 
+            border: 1px solid rgba(0, 255, 255, 0.3); 
             text-align: center;
             box-shadow: 0 0 15px rgba(0, 255, 255, 0.2), inset 0 0 10px rgba(0, 0, 0, 0.5);
             transition: box-shadow 0.3s ease;
-        }
-        .score-card:hover {
-            box-shadow: 0 0 25px rgba(0, 255, 255, 0.4), inset 0 0 10px rgba(0, 0, 0, 0.5);
         }
         .score-label {
             font-size: 11px;
@@ -51,11 +52,11 @@
         .score-value {
             font-size: 28px;
             font-weight: bold;
-            color: #00ffcc; /* Neon Yeşil */
+            color: #00ffcc; 
             text-shadow: 0 0 10px #00ffcc;
         }
         .record-value {
-            color: #ff007f; /* Neon Pembe */
+            color: #ff007f; 
             text-shadow: 0 0 10px #ff007f;
         }
 
@@ -63,7 +64,7 @@
         .stats-card {
             background: rgba(0, 0, 0, 0.5);
             padding: 6px 18px;
-            border-radius: 4px; /* Daha keskin, modern şerit */
+            border-radius: 4px; 
             font-size: 13px;
             color: #ffd700;
             margin-bottom: 20px;
@@ -74,7 +75,6 @@
         /* Oyun Alanı */
         #gameBoard {
             background-color: #010103;
-            /* Çok Katmanlı Neon Parıltı Efekti */
             border: 2px solid #00ffcc;
             border-radius: 4px;
             box-shadow: 0 0 20px rgba(0, 255, 204, 0.5), 
@@ -82,29 +82,29 @@
                         inset 0 0 20px rgba(0,0,0,0.9);
             max-width: 90vw;
             max-height: 90vw;
+            /* Dokunma olaylarının oyuna öncelikli iletilmesi için */
+            z-index: 10;
         }
 
         /* Kontrol Butonları */
         .controls {
             display: flex;
             gap: 15px;
-            margin-top: 20px;
+            margin-top: 30px;
         }
         .btn-primary {
             padding: 12px 28px;
             font-size: 15px;
-            /* Daha Keskin, Fütüristik Buton Degradeleri */
             background: linear-gradient(135deg, #00ffcc 0%, #008f8f 100%);
             color: #010103;
             border: none;
-            border-radius: 4px; /* Daha keskin köşeler */
+            border-radius: 4px; 
             cursor: pointer;
             font-weight: bold;
             text-transform: uppercase;
             letter-spacing: 2px;
             box-shadow: 0 0 15px rgba(0, 255, 204, 0.4);
             transition: all 0.3s ease;
-            text-shadow: none; /* Metin gölgesi yok */
         }
         .btn-primary:active {
             transform: scale(0.96) translateY(2px);
@@ -117,56 +117,18 @@
             display: none;
         }
 
-        /* Mobil Kontrol Butonları (D-Pad) - Modernize Edilmiş Cam Efekti */
-        .d-pad {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-top: 30px;
-            gap: 12px;
-        }
-        .horizontal-btns {
-            display: flex;
-            gap: 75px;
-        }
-        .d-pad button {
-            width: 65px;
-            height: 65px;
-            font-size: 26px;
-            /* Köşeli, Daha Profesyonel Tasarım */
-            border-radius: 12px; 
-            border: 1px solid rgba(0, 255, 255, 0.2);
-            background: rgba(0, 255, 255, 0.03);
-            backdrop-filter: blur(8px);
-            color: rgba(0, 255, 255, 0.6);
-            box-shadow: 0 0 15px rgba(0,0,0,0.5), inset 0 0 10px rgba(0, 255, 255, 0.05);
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: all 0.2s ease-in-out;
-            
-            /* Mobilde seçim/menü sorunlarını engeller */
-            -webkit-user-select: none; 
-            user-select: none;
-            -webkit-touch-callout: none;
-            outline: none; 
-        }
-        .d-pad button:active {
-            background: rgba(0, 255, 204, 0.2);
-            color: #00ffcc;
-            border-color: #00ffcc;
-            box-shadow: 0 0 20px rgba(0, 255, 204, 0.4);
-            transform: scale(0.92);
-        }
-
-        #gameBoard + .d-pad button {
-            text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+        /* Mobilde ekrana bilgi notu */
+        .mobile-hint {
+            margin-top: 20px;
+            color: #66e6e6;
+            font-size: 14px;
+            text-align: center;
+            opacity: 0.7;
         }
 
         @media (min-width: 768px) {
-            .d-pad { display: none; }
             body { padding-top: 40px; }
+            .mobile-hint { display: none; }
         }
     </style>
 </head>
@@ -189,18 +151,11 @@
     
     <canvas id="gameBoard" width="400" height="400"></canvas>
     
+    <div class="mobile-hint">Yönlendirmek için ekranda parmağınızı kaydırın 👆</div>
+
     <div class="controls">
         <button id="startBtn" class="btn-primary">Oyuna Başla</button>
         <button id="restartBtn" class="btn-primary">Yeniden Başlat</button>
-    </div>
-
-    <div class="d-pad">
-        <button id="btnUp">⬆️</button>
-        <div class="horizontal-btns">
-            <button id="btnLeft">⬅️</button>
-            <button id="btnRight">➡️</button>
-        </div>
-        <button id="btnDown">⬇️</button>
     </div>
 
     <script>
@@ -213,7 +168,6 @@
             const startBtn = document.getElementById("startBtn");
             const restartBtn = document.getElementById("restartBtn");
 
-            // Yeni Neon Renkler
             const boardBackground = "#010103";
             const gridColor = "rgba(0, 255, 255, 0.02)";
             const snakeHeadColor = "#ffffff";
@@ -293,52 +247,37 @@
             startBtn.addEventListener("click", startGame);
             restartBtn.addEventListener("click", resetGame);
             
-            // Klavye Yön Tuşları
+            // Klavye Yön Tuşları (PC için)
             window.addEventListener("keydown", (e) => { initAudio(); changeDirection(e); });
             
-            // --- MOBİL BUTON İYİLEŞTİRMELERİ (Gecikmesiz & Titreşimli) ---
-            function setupMobileButton(btnId, direction) {
-                const btn = document.getElementById(btnId);
-                
-                btn.addEventListener("touchstart", (e) => {
-                    e.preventDefault(); 
-                    initAudio();
-                    setDirection(direction);
-                    if (navigator.vibrate) navigator.vibrate(30);
-                }, { passive: false });
-
-                btn.addEventListener("mousedown", (e) => {
-                    initAudio();
-                    setDirection(direction);
-                });
-            }
-
-            setupMobileButton("btnUp", "UP");
-            setupMobileButton("btnDown", "DOWN");
-            setupMobileButton("btnLeft", "LEFT");
-            setupMobileButton("btnRight", "RIGHT");
-
-            // --- MOBİL EKRAN KAYDIRMA (SWIPE) KONTROLLERİ ---
+            // --- TÜM EKRAN KAYDIRMA (SWIPE) KONTROLLERİ ---
             let touchStartX = 0;
             let touchStartY = 0;
 
-            canvas.addEventListener('touchstart', function(e) {
-                touchStartX = e.changedTouches[0].screenX;
-                touchStartY = e.changedTouches[0].screenY;
-                initAudio(); 
+            // Dokunmayı sadece canvas'ta değil, tüm belgede algıla
+            document.addEventListener('touchstart', function(e) {
+                // Tıklanan şey bir buton değilse kaydırma işlemi başlat
+                if(e.target.tagName !== 'BUTTON') {
+                    touchStartX = e.changedTouches[0].screenX;
+                    touchStartY = e.changedTouches[0].screenY;
+                    initAudio(); 
+                }
             }, { passive: true });
 
-            canvas.addEventListener('touchend', function(e) {
-                let touchEndX = e.changedTouches[0].screenX;
-                let touchEndY = e.changedTouches[0].screenY;
-                handleSwipe(touchStartX, touchStartY, touchEndX, touchEndY);
+            document.addEventListener('touchend', function(e) {
+                if(e.target.tagName !== 'BUTTON') {
+                    let touchEndX = e.changedTouches[0].screenX;
+                    let touchEndY = e.changedTouches[0].screenY;
+                    handleSwipe(touchStartX, touchStartY, touchEndX, touchEndY);
+                }
             }, { passive: true });
 
             function handleSwipe(startX, startY, endX, endY) {
                 let deltaX = endX - startX;
                 let deltaY = endY - startY;
                 
-                if (Math.abs(deltaX) > 30 || Math.abs(deltaY) > 30) {
+                // Hassasiyeti 30'dan 20'ye düşürdük, en ufak hareketi anında yakalayacak
+                if (Math.abs(deltaX) > 20 || Math.abs(deltaY) > 20) {
                     if (Math.abs(deltaX) > Math.abs(deltaY)) {
                         if (deltaX > 0) setDirection('RIGHT');
                         else setDirection('LEFT');
@@ -346,7 +285,7 @@
                         if (deltaY > 0) setDirection('DOWN');
                         else setDirection('UP');
                     }
-                    if (navigator.vibrate) navigator.vibrate(30);
+                    if (navigator.vibrate) navigator.vibrate(20); // Ufak bir titreşim
                 }
             }
             
@@ -372,6 +311,7 @@
                 if(running) return;
                 startBtn.style.display = "none";
                 restartBtn.style.display = "none";
+                document.querySelector('.mobile-hint').style.display = "none"; // İpucunu gizle
                 running = true;
                 scoreText.textContent = score;
                 updatePointsUI();
@@ -399,7 +339,6 @@
                 ctx.fillStyle = boardBackground;
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
                 
-                // Arka plan ızgarası (Grid) çizimi
                 ctx.strokeStyle = gridColor;
                 ctx.lineWidth = 1;
                 for(let i = 0; i < canvas.width; i+=unitSize) {
@@ -440,7 +379,6 @@
                 ctx.shadowBlur = 15;
                 ctx.shadowColor = foodColor;
                 ctx.fillStyle = foodColor;
-                // Yemi hafif içeriden çizerek daha tatlı bir kare yapıyoruz
                 ctx.fillRect(foodX + 2, foodY + 2, unitSize - 4, unitSize - 4);
                 ctx.shadowBlur = 0; 
             };
