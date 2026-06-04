@@ -5,13 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Gözde - Snake</title>
     <style>
-        /* Genel Sayfa Tasarımı */
+        /* --- YENİLENMİŞ CYBERPUNK CSS TASARIMI --- */
         body {
             display: flex;
             flex-direction: column;
             align-items: center;
-            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-            color: #ecf0f1;
+            /* Gelişmiş Degradeli Arka Plan */
+            background: radial-gradient(circle at center, #0a1122 0%, #000205 100%), 
+                        linear-gradient(180deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: cover, 100% 3px; /* Hafif yatay tarama çizgileri */
+            color: #00ffff; /* Ana renk: Turkuaz */
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding-top: 20px;
@@ -26,47 +29,57 @@
             margin-bottom: 15px;
         }
         .score-card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
+            background: rgba(10, 10, 20, 0.6);
+            backdrop-filter: blur(15px);
             padding: 10px 20px;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px; /* Daha keskin köşeler */
+            border: 1px solid rgba(0, 255, 255, 0.3); /* Turkuaz parıltılı sınır */
             text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.2), inset 0 0 10px rgba(0, 0, 0, 0.5);
+            transition: box-shadow 0.3s ease;
+        }
+        .score-card:hover {
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.4), inset 0 0 10px rgba(0, 0, 0, 0.5);
         }
         .score-label {
-            font-size: 12px;
+            font-size: 11px;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #a8b8d0;
+            letter-spacing: 2px;
+            color: #66e6e6;
             margin-bottom: 5px;
         }
         .score-value {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: bold;
             color: #00ffcc; /* Neon Yeşil */
+            text-shadow: 0 0 10px #00ffcc;
         }
         .record-value {
-            color: #ff0055; /* Neon Pembe */
+            color: #ff007f; /* Neon Pembe */
+            text-shadow: 0 0 10px #ff007f;
         }
 
         /* Sıradaki Yem Puanı */
         .stats-card {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 14px;
-            color: #f1c40f;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 6px 18px;
+            border-radius: 4px; /* Daha keskin, modern şerit */
+            font-size: 13px;
+            color: #ffd700;
             margin-bottom: 20px;
-            border: 1px solid rgba(241, 196, 15, 0.3);
+            border: 1px solid rgba(255, 215, 0, 0.4);
+            text-shadow: 0 0 5px #ffd700;
         }
 
         /* Oyun Alanı */
         #gameBoard {
-            background-color: #0a0a14;
+            background-color: #010103;
+            /* Çok Katmanlı Neon Parıltı Efekti */
             border: 2px solid #00ffcc;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 255, 204, 0.3), inset 0 0 20px rgba(0,0,0,0.8);
+            border-radius: 4px;
+            box-shadow: 0 0 20px rgba(0, 255, 204, 0.5), 
+                        0 0 40px rgba(0, 255, 204, 0.2), 
+                        inset 0 0 20px rgba(0,0,0,0.9);
             max-width: 90vw;
             max-height: 90vw;
         }
@@ -78,63 +91,77 @@
             margin-top: 20px;
         }
         .btn-primary {
-            padding: 12px 25px;
-            font-size: 16px;
-            background: linear-gradient(45deg, #00ffcc, #00b38f);
-            color: #0a0a14;
+            padding: 12px 28px;
+            font-size: 15px;
+            /* Daha Keskin, Fütüristik Buton Degradeleri */
+            background: linear-gradient(135deg, #00ffcc 0%, #008f8f 100%);
+            color: #010103;
             border: none;
-            border-radius: 25px;
+            border-radius: 4px; /* Daha keskin köşeler */
             cursor: pointer;
             font-weight: bold;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 0 4px 15px rgba(0, 255, 204, 0.4);
-            transition: all 0.2s ease;
+            letter-spacing: 2px;
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.4);
+            transition: all 0.3s ease;
+            text-shadow: none; /* Metin gölgesi yok */
         }
         .btn-primary:active {
-            transform: scale(0.95);
-            box-shadow: 0 2px 10px rgba(0, 255, 204, 0.4);
+            transform: scale(0.96) translateY(2px);
+            box-shadow: 0 0 10px rgba(0, 255, 204, 0.4);
         }
         #restartBtn {
-            background: linear-gradient(45deg, #ff0055, #c00040);
+            background: linear-gradient(135deg, #ff0055 0%, #a00030 100%);
             color: white;
-            box-shadow: 0 4px 15px rgba(255, 0, 85, 0.4);
+            box-shadow: 0 0 15px rgba(255, 0, 85, 0.4);
             display: none;
         }
 
-        /* Mobil Kontrol Butonları (D-Pad) - Cam Efektli */
+        /* Mobil Kontrol Butonları (D-Pad) - Modernize Edilmiş Cam Efekti */
         .d-pad {
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-top: 25px;
-            gap: 10px;
+            margin-top: 30px;
+            gap: 12px;
         }
         .horizontal-btns {
             display: flex;
-            gap: 70px;
+            gap: 75px;
         }
         .d-pad button {
-            width: 60px;
-            height: 60px;
-            font-size: 24px;
-            border-radius: 50%;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(5px);
-            color: rgba(255, 255, 255, 0.7);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            width: 65px;
+            height: 65px;
+            font-size: 26px;
+            /* Köşeli, Daha Profesyonel Tasarım */
+            border-radius: 12px; 
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            background: rgba(0, 255, 255, 0.03);
+            backdrop-filter: blur(8px);
+            color: rgba(0, 255, 255, 0.6);
+            box-shadow: 0 0 15px rgba(0,0,0,0.5), inset 0 0 10px rgba(0, 255, 255, 0.05);
             cursor: pointer;
             display: flex;
             justify-content: center;
             align-items: center;
-            transition: all 0.1s;
+            transition: all 0.2s ease-in-out;
+            
+            /* Mobilde seçim/menü sorunlarını engeller */
+            -webkit-user-select: none; 
+            user-select: none;
+            -webkit-touch-callout: none;
+            outline: none; 
         }
         .d-pad button:active {
-            background: rgba(0, 255, 204, 0.3);
+            background: rgba(0, 255, 204, 0.2);
             color: #00ffcc;
             border-color: #00ffcc;
-            transform: scale(0.9);
+            box-shadow: 0 0 20px rgba(0, 255, 204, 0.4);
+            transform: scale(0.92);
+        }
+
+        #gameBoard + .d-pad button {
+            text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
         }
 
         @media (min-width: 768px) {
@@ -187,11 +214,11 @@
             const restartBtn = document.getElementById("restartBtn");
 
             // Yeni Neon Renkler
-            const boardBackground = "#0a0a14";
-            const gridColor = "rgba(255, 255, 255, 0.03)";
+            const boardBackground = "#010103";
+            const gridColor = "rgba(0, 255, 255, 0.02)";
             const snakeHeadColor = "#ffffff";
             const snakeBodyColor = "#00ffcc";
-            const foodColor = "#ff0055";
+            const foodColor = "#ff007f";
             const goldenFoodColor = "#ffd700"; 
             const unitSize = 20;
 
@@ -265,11 +292,63 @@
 
             startBtn.addEventListener("click", startGame);
             restartBtn.addEventListener("click", resetGame);
-            document.getElementById("btnUp").addEventListener("click", () => { initAudio(); setDirection('UP'); });
-            document.getElementById("btnDown").addEventListener("click", () => { initAudio(); setDirection('DOWN'); });
-            document.getElementById("btnLeft").addEventListener("click", () => { initAudio(); setDirection('LEFT'); });
-            document.getElementById("btnRight").addEventListener("click", () => { initAudio(); setDirection('RIGHT'); });
+            
+            // Klavye Yön Tuşları
             window.addEventListener("keydown", (e) => { initAudio(); changeDirection(e); });
+            
+            // --- MOBİL BUTON İYİLEŞTİRMELERİ (Gecikmesiz & Titreşimli) ---
+            function setupMobileButton(btnId, direction) {
+                const btn = document.getElementById(btnId);
+                
+                btn.addEventListener("touchstart", (e) => {
+                    e.preventDefault(); 
+                    initAudio();
+                    setDirection(direction);
+                    if (navigator.vibrate) navigator.vibrate(30);
+                }, { passive: false });
+
+                btn.addEventListener("mousedown", (e) => {
+                    initAudio();
+                    setDirection(direction);
+                });
+            }
+
+            setupMobileButton("btnUp", "UP");
+            setupMobileButton("btnDown", "DOWN");
+            setupMobileButton("btnLeft", "LEFT");
+            setupMobileButton("btnRight", "RIGHT");
+
+            // --- MOBİL EKRAN KAYDIRMA (SWIPE) KONTROLLERİ ---
+            let touchStartX = 0;
+            let touchStartY = 0;
+
+            canvas.addEventListener('touchstart', function(e) {
+                touchStartX = e.changedTouches[0].screenX;
+                touchStartY = e.changedTouches[0].screenY;
+                initAudio(); 
+            }, { passive: true });
+
+            canvas.addEventListener('touchend', function(e) {
+                let touchEndX = e.changedTouches[0].screenX;
+                let touchEndY = e.changedTouches[0].screenY;
+                handleSwipe(touchStartX, touchStartY, touchEndX, touchEndY);
+            }, { passive: true });
+
+            function handleSwipe(startX, startY, endX, endY) {
+                let deltaX = endX - startX;
+                let deltaY = endY - startY;
+                
+                if (Math.abs(deltaX) > 30 || Math.abs(deltaY) > 30) {
+                    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                        if (deltaX > 0) setDirection('RIGHT');
+                        else setDirection('LEFT');
+                    } else {
+                        if (deltaY > 0) setDirection('DOWN');
+                        else setDirection('UP');
+                    }
+                    if (navigator.vibrate) navigator.vibrate(30);
+                }
+            }
             
             initGame();
 
@@ -283,7 +362,7 @@
                 ctx.shadowColor = "#00ffcc";
                 ctx.fillText("HAZIR MISIN?", canvas.width / 2, canvas.height / 2 - 15);
                 ctx.font = "16px 'Segoe UI'";
-                ctx.fillStyle = "#a8b8d0";
+                ctx.fillStyle = "#66e6e6";
                 ctx.shadowBlur = 0;
                 ctx.fillText("Başlamak için butona bas", canvas.width / 2, canvas.height / 2 + 20);
             }
@@ -420,7 +499,6 @@
 
             function drawSnake() {
                 snake.forEach((snakePart, index) => {
-                    // Yılanın başı farklı renk, gövdesi farklı renk
                     ctx.fillStyle = index === 0 ? snakeHeadColor : snakeBodyColor;
                     
                     if(index === 0) {
@@ -430,7 +508,6 @@
                         ctx.shadowBlur = 0;
                     }
                     
-                    // Parçalar arasında boşluk bırakmak için +1 ve -2 tekniği
                     ctx.fillRect(snakePart.x + 1, snakePart.y + 1, unitSize - 2, unitSize - 2);
                 });
                 ctx.shadowBlur = 0; 
@@ -468,10 +545,10 @@
 
             function displayGameOver() {
                 ctx.font = "bold 35px 'Segoe UI'";
-                ctx.fillStyle = "#ff0055";
+                ctx.fillStyle = "#ff007f";
                 ctx.textAlign = "center";
                 ctx.shadowBlur = 15;
-                ctx.shadowColor = "#ff0055";
+                ctx.shadowColor = "#ff007f";
                 ctx.fillText("OYUN BİTTİ!", canvas.width / 2, canvas.height / 2);
                 ctx.shadowBlur = 0;
                 restartBtn.style.display = "block"; 
